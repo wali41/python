@@ -1,0 +1,114 @@
+import pygame
+import sys
+import random
+
+# Initialize Pygame
+pygame.init()
+
+# Screen settings
+WIDTH, HEIGHT = 600, 400
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Rock Paper Scissors")
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+BLUE = (100, 149, 237)
+RED = (220, 20, 60)
+GREEN = (34, 139, 34)
+
+# Fonts
+font = pygame.font.SysFont(None, 36)
+large_font = pygame.font.SysFont(None, 48)
+
+# Choices
+choices = ["Rock", "Paper", "Scissors"]
+
+
+# Button class
+class Button:
+    def __init__(self, text, x, y, width, height, color, action):
+        self.text = text
+        self.rect = pygame.Rect(x, y, width, height)
+        self.color = color
+        self.action = action
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.color, self.rect)
+        text_surf = font.render(self.text, True, WHITE)
+        text_rect = text_surf.get_rect(center=self.rect.center)
+        surface.blit(text_surf, text_rect)
+
+    def is_clicked(self, pos):
+        return self.rect.collidepoint(pos)
+
+
+# Game logic
+def determine_winner(player, computer):
+    if player == computer:
+        return "It's a Tie!"
+    elif (
+        (player == "Rock" and computer == "Scissors")
+        or (player == "Scissors" and computer == "Paper")
+        or (player == "Paper" and computer == "Rock")
+    ):
+        return "You Win!"
+    else:
+        return "Computer Wins!"
+
+
+# Buttons
+button_width, button_height = 150, 50
+spacing = 30
+buttons = [
+    Button("Rock", 50, HEIGHT - 80, button_width, button_height, BLUE, "Rock"),
+    Button("Paper", 225, HEIGHT - 80, button_width, button_height, GREEN, "Paper"),
+    Button("Scissors", 400, HEIGHT - 80, button_width, button_height, RED, "Scissors"),
+]
+
+# Game state
+player_choice = ""
+computer_choice = ""
+result = ""
+
+# Main game loop
+running = True
+while running:
+    screen.fill(WHITE)
+
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            for button in buttons:
+                if button.is_clicked(event.pos):
+                    player_choice = button.action
+                    computer_choice = random.choice(choices)
+                    result = determine_winner(player_choice, computer_choice)
+
+    # Draw buttons
+    for button in buttons:
+        button.draw(screen)
+
+    # Display choices and result
+    if player_choice:
+        player_text = font.render(f"You chose: {player_choice}", True, BLACK)
+        screen.blit(player_text, (50, 50))
+
+    if computer_choice:
+        computer_text = font.render(f"Computer chose: {computer_choice}", True, BLACK)
+        screen.blit(computer_text, (50, 100))
+
+    if result:
+        result_text = large_font.render(result, True, BLACK)
+        screen.blit(result_text, (50, 160))
+
+    # Update display
+    pygame.display.flip()
+
+# Quit Pygame
+pygame.quit()
+sys.exit()
