@@ -1,0 +1,23 @@
+import random
+
+def roll_dice():
+    """Simulate rolling a dice and return the result (1–6)."""
+    return random.randint(1, 6)
+
+def dice_simulator():
+    print("🎲 Welcome to the Dice Rolling Simulator 🎲")
+    
+    while True:
+        choice = input("Do you want to roll the dice? (yes/no): ").strip().lower()
+        
+        if choice == "yes":
+            result = roll_dice()
+            print(f"You rolled a {result}!")
+        elif choice == "no":
+            print("Thanks for playing! Goodbye 👋")
+            break
+        else:
+            print("Invalid choice. Please type 'yes' or 'no'.")
+
+# Run the simulator
+dice_simulator()
